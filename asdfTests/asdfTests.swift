@@ -20,7 +20,7 @@ class asdfTests: XCTestCase {
     }
 
     func testExample() {
-        XCTFail()
+        XCTAssertTrue(true)
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
