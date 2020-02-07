@@ -1,13 +1,17 @@
-name: Swift
+name: Swift Build and Tests
 
 on:
   push:
-    branches: 
+    branches:
       - master
 
 jobs:
   job-nomipro:
     runs-on: macos-latest
+
+    strategy:
+        matrix:
+          destination: ['platform=iOS Simulator,OS=13.1,name=iPhone 11'] 
 
     steps:
       - name: Checkout
@@ -15,7 +19,9 @@ jobs:
 
       - name: Build and test
         run: |
-          xcodebuild clean test -project asdf.xcodeproj -destination "${destination}" \ CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO
+          xcodebuild clean test -project asdf.xcodeproj -scheme asdf -destination "${destination}" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO
+        env: 
+         destination: ${{ matrix.destination }}
 
       - name: Slack Notification
         uses: homoluctus/slatify@master
@@ -27,3 +33,5 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
+# SLACK_WEBHOOK
+# https://hooks.slack.com/services/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
