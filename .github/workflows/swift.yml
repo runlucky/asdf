@@ -1,0 +1,28 @@
+name: Swift
+
+on:
+  push:
+    branches: 
+      - master
+
+jobs:
+  job-nomipro:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Build and test
+        run: |
+          xcodebuild clean test -project asdf.xcodeproj -scheme asdf -destination "${destination}" \ CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO
+
+      - name: Slack Notification
+        uses: homoluctus/slatify@master
+        if: failure()
+        with:
+          type: ${{ job.status }}
+          job_name: "なんかエラー https://github.com/${{ github.repository }}/commit/${{ github.sha }}/checks"
+          username: "GitHub Actions"
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
